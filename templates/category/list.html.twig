@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CategoryController!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if categories|length > 0 %}
+            <h2>Liste des catégories</h2>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom du catégorie</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <th scope="row">{{category.id}}</th>
+                        <td>{{category.name}}</td>
+                        <td>
+                            <a href="{{ path('app_category_update', {'id': category.id}) }}" class="btn btn-success btn-sm">Modifier</a>
+                            <a href="{{ path('app_category_delete', {id: category.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h2>Aucune catégorie est enrigistré pour le moment </h2> 
+            <a href="{{ path('app_category_new') }}" class="text-success">Ajouter une catégorie</a>   
+        {% endif %}
+    </div>
+    
+{% endblock %}
