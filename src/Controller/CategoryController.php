@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class CategoryController extends AbstractController
+#[Route('/admin')]
+class CategoryController extends AbstractController
 {
     #[Route('/categories', name: 'app_category')]
     public function index(CategoryRepository $cateRepo, Request $request): Response
@@ -36,12 +37,14 @@ final class CategoryController extends AbstractController
             $category->setCreatedAt(new \DateTimeImmutable());
             $em->persist($category);
             $em->flush();
+            $this->addFlash('success', 'Votre catégorie a été bien créee avec succès.');
 
             return $this->redirectToRoute('app_category');
         }
 
         return $this->render('category/newOrUpdate.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'operation' => 'new'
         ]);
     }
 
@@ -56,13 +59,15 @@ final class CategoryController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
             $category->setUpdatedAt(new \DateTimeImmutable());
             $em->flush();
+            $this->addFlash('success', 'Votre catégorie a été bien modifié avec succès.');
 
             return $this->redirectToRoute('app_category');
         }
 
         return $this->render('category/newOrUpdate.html.twig', [
             'category' => $category,
-            'form' => $form->createView()
+            'form' => $form->createView(), 
+            'operation' => 'update'
         ]);
     }
 
@@ -71,6 +76,7 @@ final class CategoryController extends AbstractController
     {
         $em->remove($category);
         $em->flush();
+        $this->addFlash('danger', 'Le catégorie '.$category->getName().' a été supprimée avec succès.');
 
         return $this->redirectToRoute('app_category');
     }
