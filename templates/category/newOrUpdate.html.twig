@@ -2,7 +2,15 @@
 {% block body %}
     <div class="container">
         <div class="form">
-        <h2>Ajouter une catégorie</h2>
+        <h2>
+        {% if operation == 'new' %}
+             Ajout d'une catégorie
+        {% else %}
+            Modification d'une catégorie
+        {% endif %}
+        
+           
+        </h2>
             {{ form_start(form) }}
                 {{ form_row(form.name, 
                     {'attr': 

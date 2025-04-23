@@ -5,6 +5,7 @@
 {% block body %}
     <div class="container">
         {% if categories|length > 0 %}
+            {% include 'layouts/_flash_message.html.twig' %}
             <h2>Liste des catégories</h2>
             <table class="table">
                 <thead class="thead-dark">
@@ -31,6 +32,7 @@
             <h2>Aucune catégorie est enrigistré pour le moment </h2> 
             <a href="{{ path('app_category_new') }}" class="text-success">Ajouter une catégorie</a>   
         {% endif %}
+        <a href={{ path('app_category_new') }} class="btn btn-secondary">Ajouter une catégorie</a>
     </div>
     
 {% endblock %}
