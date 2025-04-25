@@ -22,7 +22,7 @@
                         <td>{{category.name}}</td>
                         <td>
                             <a href="{{ path('app_category_update', {'id': category.id}) }}" class="btn btn-success btn-sm">Modifier</a>
-                            <a href="{{ path('app_category_delete', {id: category.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                            <a onclick="return confirm('Voulez-vous vraiment supprimer cette catégorie?');" href="{{ path('app_category_delete', {id: category.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -30,9 +30,9 @@
             </table>
         {% else %}
             <h2>Aucune catégorie est enrigistré pour le moment </h2> 
-            <a href="{{ path('app_category_new') }}" class="text-success">Ajouter une catégorie</a>   
+            {# <a href="{{ path('app_category_new') }}" class="text-success">Ajouter une catégorie</a>    #}
         {% endif %}
-        <a href={{ path('app_category_new') }} class="btn btn-secondary">Ajouter une catégorie</a>
+        <a href={{ path('app_category_new') }} class="btn btn-outline-secondary">Ajouter une catégorie</a>
     </div>
     
 {% endblock %}
