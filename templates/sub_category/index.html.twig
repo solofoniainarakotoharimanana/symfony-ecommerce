@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SubCategory index{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Sous catégories</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Catégorie</th>
+                    {# <th>CreatedAt</th>
+                    <th>UpdatedAt</th> #}
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for sub_category in sub_categories %}
+                <tr>
+                    <td>{{ sub_category.id }}</td>
+                    <td>{{ sub_category.name }}</td>
+                    <td>{{ sub_category.category.name }}</td>
+                    {# <td>{{ sub_category.createdAt ? sub_category.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ sub_category.updatedAt ? sub_category.updatedAt|date('Y-m-d H:i:s') : '' }}</td> #}
+                    <td>
+                        <a class="btn btn-outline-primary" href="{{ path('app_sub_category_edit', {'id': sub_category.id}) }}">Editer</a>
+                        <a onclick="return confirm('Voulez-vous supprimer cette sous catégotrie?')" class="btn btn-outline-danger" href="{{ path('app_sub_category_delete', {'id': sub_category.id}) }}">Supprimer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a class="btn btn-outline-primary" href="{{ path('app_sub_category_new') }}">Ajouter une catégorie</a>
+    </div>
+{% endblock %}
