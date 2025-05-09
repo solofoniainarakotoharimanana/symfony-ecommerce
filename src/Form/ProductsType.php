@@ -35,6 +35,11 @@ class ProductsType extends AbstractType
                     'placeholder' => 'Prix du produit'
                 ]
             ])
+            ->add('stock', NumberType::class, [
+                'attr' => [
+                    'placeholder' => 'Quantité au stock'
+                ]
+            ])
             ->add('image', FileType::class, [
                 'label' => 'Image de produit',
                 'mapped' => false,

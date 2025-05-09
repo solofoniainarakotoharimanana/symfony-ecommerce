@@ -14,6 +14,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Price</th>
+                    <th>Stock</th>
                     <th>actions</th>
                 </tr>
             </thead>
@@ -22,11 +23,19 @@
                 <tr>
                     <td>{{ product.id }}</td>
                     <td>{{ product.name }}</td>
-                    <td>{{ product.description }}</td>
+                    <td>{{ product.description|slice(0, 50) }}</td>
                     <td>{{ product.price }}</td>
                     <td>
-                        <a class="btn btn-outline-primary btn-sm" href="{{ path('app_products_show', {'id': product.id}) }}">show</a>
-                        <a class="btn btn-danger btn-sm" href="{{ path('app_products_edit', {'id': product.id}) }}">edit</a>
+                        {% if product.stock > 0 %}  
+                            {{ product.stock }}
+                        {% else %}
+                            <span class="text-danger text-center fw-bol">Stock épuisé</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-primary btn-sm" href="{{ path('app_products_show', {'id': product.id}) }}">Show</a>
+                        <a class="btn btn-success btn-sm" href="{{ path('app_products_edit', {'id': product.id}) }}">Editer</a>
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ path('app_add_stock', {'productId': product.id}) }}">Ajout le stock</a>
                     </td>
                 </tr>
             {% else %}

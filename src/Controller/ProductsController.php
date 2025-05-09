@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\AddProductHistory;
 use App\Entity\Products;
+use App\Form\AddStockType;
 use App\Form\ProductsType;
 use App\Repository\ProductsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,10 +47,18 @@ final class ProductsController extends AbstractController
                 } catch (FileException $fileException) {
                     //throw $th;
                 }
+                $product->setImage($newFileName);
             }
 
-            $product->setImage($newFileName);
+            
             $entityManager->persist($product);
+            $entityManager->flush();
+
+            $productHistory = new AddProductHistory();
+            $productHistory->setQuantity($product->getStock());
+            $productHistory->setProduct($product);
+
+            $entityManager->persist($productHistory);
             $entityManager->flush();
             
             $this->addFlash('success', 'Votre produit a été ajouté');
@@ -98,5 +108,38 @@ final class ProductsController extends AbstractController
         }
 
         return $this->redirectToRoute('app_products_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/add/stock/{productId}', name: 'app_add_stock', methods: ['GET', 'POST'])]
+    public function addStock($productId, 
+        ProductsRepository $productRepo,  
+        Request $request, EntityManagerInterface $em)
+    {
+     
+        $product = $productRepo->find($productId);
+        $addProductHistory = new AddProductHistory();
+        $form = $this->createForm(AddStockType::class, $addProductHistory);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($addProductHistory->getQuantity() > 0){
+                $newQty = $product->getStock() + $addProductHistory->getQuantity();
+                $product->setStock($newQty);
+
+                $em->persist($addProductHistory);
+                $em->flush();
+                $this->addFlash('success', 'Le stock de votre produit a été modifié avec succès.');
+
+                return $this->redirectToRoute('app_products_index');
+            }
+            else {
+                $this->addFlash('danger', 'Le stock ne doit pas $etre inferieur à 0');
+            }
+        } 
+
+        $em->flush();
+
+        return $this->render('products/addStock.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }

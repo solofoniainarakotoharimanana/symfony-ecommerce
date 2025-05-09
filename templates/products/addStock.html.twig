@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <h1>Ajouter le stock</h1>
+        {{ form_start(form) }}
+            {{ form_row(form.quantity, {'attr': {'class': 'form form-control'}}) }}
+            {# {{ form_row(form.product, {'attr': {'class': 'form form-control'}}) }} #}
+            <button class="btn btn-primary">{{ button_label|default('Enregister') }}</button>
+        {{ form_end(form) }}
+        
+    </div>
+{% endblock %}
