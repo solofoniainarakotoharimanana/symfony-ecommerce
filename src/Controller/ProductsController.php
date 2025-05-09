@@ -6,12 +6,15 @@ use App\Entity\Products;
 use App\Form\ProductsType;
 use App\Repository\ProductsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\Node\Stmt\TryCatch;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[Route('/products')]
+#[Route('/editor/products')]
 final class ProductsController extends AbstractController
 {
     #[Route(name: 'app_products_index', methods: ['GET'])]
@@ -23,13 +26,28 @@ final class ProductsController extends AbstractController
     }
 
     #[Route('/new', name: 'app_products_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, 
+        EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $product = new Products();
         $form = $this->createForm(ProductsType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
+            
+            if ($image) {
+                $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                $imageSafeName = $slugger->slug($originalName);
+                $newFileName = $imageSafeName.'-'.uniqid().'.'.$image->guessExtension();
+                try {
+                    $image->move($this->getParameter('image_products_dir'), $newFileName);
+                } catch (FileException $fileException) {
+                    //throw $th;
+                }
+            }
+
+            $product->setImage($newFileName);
             $entityManager->persist($product);
             $entityManager->flush();
             

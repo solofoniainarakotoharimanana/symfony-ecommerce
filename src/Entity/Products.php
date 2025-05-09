@@ -35,6 +35,9 @@ class Products
     #[ORM\ManyToMany(targetEntity: SubCategory::class, inversedBy: 'products')]
     private Collection $subCategories;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
@@ -102,6 +105,18 @@ class Products
     public function removeSubCategory(SubCategory $subCategory): static
     {
         $this->subCategories->removeElement($subCategory);
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }
