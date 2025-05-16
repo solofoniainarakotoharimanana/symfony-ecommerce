@@ -7,28 +7,41 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Trait\Timestampable;
 
 #[ORM\Entity(repositoryClass: AddProductHistoryRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class AddProductHistory
 {
-
     use Timestampable;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'addProductHistories')]
-    private ?Products $product = null;
-
     #[ORM\Column]
     private ?int $quantity = null;
+
+    #[ORM\ManyToOne(inversedBy: 'addProductHistories')]
+    private ?Products $product = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
     }
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): static
+    {
+        $this->quantity = $quantity;
+
+        return $this;
     }
 
     public function getProduct(): ?Products
@@ -43,15 +56,9 @@ class AddProductHistory
         return $this;
     }
 
-    public function getQuantity(): ?int
+    #[ORM\PreUpdate]
+    public function preUpdate()
     {
-        return $this->quantity;
-    }
-
-    public function setQuantity(int $quantity): static
-    {
-        $this->quantity = $quantity;
-
-        return $this;
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }

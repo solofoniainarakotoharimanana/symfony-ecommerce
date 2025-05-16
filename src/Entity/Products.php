@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Trait\Timestampable;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Products
 {
     use Timestampable;
@@ -46,10 +47,10 @@ class Products
      */
     #[ORM\OneToMany(targetEntity: AddProductHistory::class, mappedBy: 'product')]
     private Collection $addProductHistories;
-
+    
     public function __construct()
     {
-        $this->setCreatedAt(new \DateTimeImmutable());
+        $this->createdAt = new \DateTimeImmutable();
         $this->subCategories = new ArrayCollection();
         $this->addProductHistories = new ArrayCollection();
     }
@@ -171,5 +172,11 @@ class Products
         }
 
         return $this;
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate()
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }
