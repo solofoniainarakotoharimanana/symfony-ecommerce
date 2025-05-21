@@ -3,5 +3,21 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block body %}
-    <h1>Hello</h1>
+    <div class="container">
+        {% if products|length > 0 %}
+            <h1 class="text-primary product-text-title">Liste des produits</h1>
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-3 mb-4">
+                    {% include '/layouts/_product_card.html.twig' with {'product': product} only %}
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <h1 class="text-warning warning-text-title">Pas de produits à afficher pour le moment.</h1>
+        {% endif %}
+        
+        
+    
+    </div>
 {% endblock %}

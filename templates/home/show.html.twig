@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <div class="card mb-3" style="margin-top: 50px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                 {% if product.image != "" %}
+                    <img src="{{ asset('uploads/images/products/'~ product.image)}}" class="card-img-top" alt={{ product.name }}> 
+                {% else %}
+                    <img src="{{ asset('uploads/images/products/article.png')}}" class="card-img-top" alt={{ product.name }}>
+                {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{product.name}}</h5>
+                        <p class="card-text">{{product.description}}</p>
+                        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                        <a href="#">Ajouter au panier</a>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+          <h2 class="text-primary m-3">Derniers produits ajoutés</h2>
+        {% if latestProducts|length > 0 %}
+            <div class="row">
+                {% for product in latestProducts %}
+                    <div class="col-md-3 mb-4">
+                        {% include '/layouts/_product_card.html.twig' with {'product': product} only %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
