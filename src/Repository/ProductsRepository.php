@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Class\SearchProduct;
 use App\Entity\Products;
+use App\Entity\SubCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,4 +42,26 @@ class ProductsRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findBySearch(SearchProduct $searchProduct)
+    {
+        $query = $this->createQueryBuilder('p')
+                 ->join('p.subCategories', 's')
+                 ->join('s.category', 'c')
+                 ->addOrderBy('p.createdAt', 'DESC');
+        if (!empty($searchProduct->name)) {
+            $query = $query->andWhere('p.name LIKE :name')
+                     ->setParameter('name', '%'.$searchProduct->name.'%');
+        }
+
+        if (count($searchProduct->categories) > 0) {
+            $query = $query->andWhere('c.id IN (:categories)')
+                     ->setParameter('categories', $searchProduct->categories);
+        }
+
+        $query = $query->getQuery()
+                ->getResult();
+                
+        return $query;
+    }
 }

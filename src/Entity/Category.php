@@ -86,4 +86,9 @@ class Category
     {
         $this->updatedAt = new \DateTimeImmutable();
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

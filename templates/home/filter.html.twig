@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container">
+    {% if products|length > 0 %}
+    <div class="row">
+         {% for product in products %}
+            <div class="col-md-3 mb-4">
+                {% include '/layouts/_product_card.html.twig' with {'product': product} only %}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
